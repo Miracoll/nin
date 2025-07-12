@@ -102,7 +102,7 @@ class Guardian(models.Model):
 class NextOfKin(models.Model):
     next_of_kin_surname = models.CharField(max_length=50)
     next_of_kin_first_name = models.CharField(max_length=50)
-    next_of_kin_middle_name = models.CharField(max_length=50)
+    next_of_kin_middle_name = models.CharField(max_length=50, null=True, blank=True)
     next_of_kin_relationship = models.CharField(max_length=50)
 
     next_of_kin_country = models.CharField(max_length=50)
@@ -111,7 +111,7 @@ class NextOfKin(models.Model):
     next_of_kin_town = models.CharField(max_length=50)
     next_of_kin_street_address = models.CharField(max_length=50)
 
-    next_of_kin_nin = models.CharField(max_length=50)
+    next_of_kin_nin = models.CharField(max_length=50, null=True, blank=True)
 
     nin_user = models.OneToOneField(NINProfile, on_delete=models.CASCADE)
     created_on = models.DateTimeField(default=timezone.now)

@@ -6,16 +6,23 @@ from nin_record.api.serializers import GuardianSerializer, NINProfileSerializer,
 from nin_record.models import NINProfile, NextOfKin, Parent, SupportingDocument, Guardian
 
 class NINReportList(APIView):
-    def get(self,request):
+    def get(self, request):
         data = NINProfile.objects.all()
         serializer = NINProfileSerializer(data, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
+        # email = request.data.get('email')
+        # if NINProfile.objects.filter(email=email).exists():
+        #     return Response(
+        #         {"error": "Email already exists."},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        
         serializer = NINProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
