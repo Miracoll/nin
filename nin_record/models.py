@@ -20,7 +20,7 @@ class RegistrationCenter(models.Model):
         return f"{self.center_name} - {self.officer_name}"
 
 class NINProfile(models.Model):
-    nin = models.CharField(max_length=11, unique=True)
+    nin = models.CharField(max_length=11, unique=True, blank=True, null=True)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100)
@@ -59,6 +59,7 @@ class NINProfile(models.Model):
 class SupportingDocument(models.Model):
     document_name = models.CharField(max_length=100)
     document_number = models.CharField(max_length=100)
+    document = models.ImageField(upload_to='documents', blank=None, null=None, default='noimage.jpg')
 
     exp_month = models.IntegerField(choices=[(i, i) for i in range(1, 13)])
     exp_year = models.IntegerField(choices=[(y, y) for y in range(2020, 2051)]) 
@@ -72,13 +73,13 @@ class SupportingDocument(models.Model):
 class Parent(models.Model):
     father_surname = models.CharField(max_length=50)
     father_first_name = models.CharField(max_length=50)
-    father_middle_name = models.CharField(max_length=50)
-    father_nin = models.CharField(max_length=50)
+    father_middle_name = models.CharField(max_length=50, blank=True, null=True)
+    father_nin = models.CharField(max_length=50, blank=True, null=True)
 
     mother_surname = models.CharField(max_length=50)
     mother_first_name = models.CharField(max_length=50)
-    mother_middle_name = models.CharField(max_length=50)
-    mother_nin = models.CharField(max_length=50)
+    mother_middle_name = models.CharField(max_length=50, blank=True, null=True)
+    mother_nin = models.CharField(max_length=50, blank=True, null=True)
 
     nin_user = models.OneToOneField(NINProfile, on_delete=models.CASCADE)
     created_on = models.DateTimeField(default=timezone.now)
@@ -87,10 +88,10 @@ class Parent(models.Model):
         return f"{self.nin_user.nin} - {self.nin_user.last_name} {self.nin_user.first_name} parent"
     
 class Guardian(models.Model):
-    father_surname = models.CharField(max_length=50)
-    father_first_name = models.CharField(max_length=50)
-    father_middle_name = models.CharField(max_length=50)
-    father_nin = models.CharField(max_length=50)
+    guardian_surname = models.CharField(max_length=50)
+    guardian_first_name = models.CharField(max_length=50)
+    guardian_middle_name = models.CharField(max_length=50, blank=True, null=True)
+    guardian_nin = models.CharField(max_length=50, blank=True, null=True)
 
     nin_user = models.OneToOneField(NINProfile, on_delete=models.CASCADE)
     created_on = models.DateTimeField(default=timezone.now)
@@ -101,7 +102,7 @@ class Guardian(models.Model):
 class NextOfKin(models.Model):
     next_of_kin_surname = models.CharField(max_length=50)
     next_of_kin_first_name = models.CharField(max_length=50)
-    next_of_kin_middel_name = models.CharField(max_length=50)
+    next_of_kin_middle_name = models.CharField(max_length=50)
     next_of_kin_relationship = models.CharField(max_length=50)
 
     next_of_kin_country = models.CharField(max_length=50)
@@ -112,7 +113,7 @@ class NextOfKin(models.Model):
 
     next_of_kin_nin = models.CharField(max_length=50)
 
-    nin_user = models.ForeignKey(NINProfile, on_delete=models.CASCADE)
+    nin_user = models.OneToOneField(NINProfile, on_delete=models.CASCADE)
     created_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
