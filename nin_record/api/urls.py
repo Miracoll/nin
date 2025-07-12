@@ -1,6 +1,6 @@
 from django.urls import path
 
-from nin_record.api.views import GuardianDetail, GuardianList, NINReportList, NINReportDetail, NextOfKinDetail, NextOfKinList, ParentDetail, ParentList, SupportingDocumentDetail, SupportingDocumentList
+from nin_record.api.views import GuardianDetail, GuardianList, NINReportList, NINReportDetail, NextOfKinDetail, NextOfKinList, ParentDetail, ParentList, SupportingDocumentDetail, SupportingDocumentList, ReportDetail
 
 urlpatterns = [
     path('nin/record/', NINReportList.as_view()),
@@ -17,4 +17,6 @@ urlpatterns = [
 
     path('nok/', NextOfKinList.as_view()),
     path('nok/<str:pk>/', NextOfKinDetail.as_view()),
+
+    path('report/<str:nin>/', ReportDetail.as_view())
 ]

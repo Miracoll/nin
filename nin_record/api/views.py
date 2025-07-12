@@ -12,12 +12,12 @@ class NINReportList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        # email = request.data.get('email')
-        # if NINProfile.objects.filter(email=email).exists():
-        #     return Response(
-        #         {"error": "Email already exists."},
-        #         status=status.HTTP_400_BAD_REQUEST
-        #     )
+        email = request.data.get('email')
+        if NINProfile.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email already exists."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
         serializer = NINProfileSerializer(data=request.data)
         if serializer.is_valid():
@@ -171,3 +171,23 @@ class NextOfKinDetail(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+        
+class ReportDetail(APIView):
+    def get(self, request, nin):
+        try:
+            data = NINProfile.objects.get(nin=nin)
+            document = SupportingDocument.objects.filter(nin_user=data)
+            parent = Parent.objects.get(nin_user=data)
+            guardian = Guardian.objects.get(nin_user=data)
+            nok = NextOfKin.objects.get(nin_user=data)
+        except (NINProfile.DoesNotExist, Parent.DoesNotExist, Guardian.DoesNotExist, NextOfKin.DoesNotExist):
+            return Response({'error': 'Record not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        response_data = {
+            "profile": NINProfileSerializer(data).data,
+            "documents": SupportingDocumentSerializer(document, many=True).data,
+            "parent": ParentSerializer(parent).data,
+            "guardian": GuardianSerializer(guardian).data,
+            "next_of_kin": NextOfKinSerializer(nok).data,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
